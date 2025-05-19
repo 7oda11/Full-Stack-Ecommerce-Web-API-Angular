@@ -20,4 +20,8 @@
     <ProjectReference Include="..\Ecom.Infrastracture\Ecom.Infrastracture.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

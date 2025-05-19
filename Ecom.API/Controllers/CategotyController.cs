@@ -29,7 +29,7 @@ namespace Ecom.API.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(ex.Message);
+                return BadRequest(new ResponseAPI(400, ex.Message));
             }
 
         }
@@ -46,7 +46,7 @@ namespace Ecom.API.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(ex.Message);
+                return BadRequest(new ResponseAPI(400, ex.Message));
             }
         }
         [HttpPost("add-category")]
@@ -69,7 +69,7 @@ namespace Ecom.API.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(ex.Message);
+                return BadRequest(new ResponseAPI(400, ex.Message));
             }
         }
         [HttpPut("update-category")]
@@ -92,7 +92,7 @@ namespace Ecom.API.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(ex.Message);
+                return BadRequest(new ResponseAPI(400, ex.Message));
             }
         }
         [HttpDelete("delete-category/{id}")]
@@ -107,7 +107,7 @@ namespace Ecom.API.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(ex.Message);
+                return BadRequest(new ResponseAPI(400, ex.Message));
             }
         }
     }

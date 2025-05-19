@@ -1,6 +1,7 @@
 
 using AutoMapper;
 using Ecom.Infrastracture;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Ecom.API
 {
@@ -17,6 +18,11 @@ namespace Ecom.API
             builder.Services.AddOpenApi();
             builder.Services.InfrastractureConfiguration(builder.Configuration);
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            builder.Services.Configure<FormOptions>(options =>
+            {
+                options.ValueCountLimit = int.MaxValue; // Or a custom number higher than 1024
+                options.MultipartBodyLengthLimit = 268435456; // Example: 256 MB
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

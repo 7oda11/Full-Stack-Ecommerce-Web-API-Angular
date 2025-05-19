@@ -3,6 +3,7 @@ using Ecom.Infrastracture.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecom.Infrastracture.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250519081017_updateProduct")]
+    partial class updateProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,7 +92,7 @@ namespace Ecom.Infrastracture.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryID")
+                    b.Property<int>("CatregoryID")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -108,7 +111,7 @@ namespace Ecom.Infrastracture.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryID");
+                    b.HasIndex("CatregoryID");
 
                     b.ToTable("Products");
 
@@ -116,7 +119,7 @@ namespace Ecom.Infrastracture.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CategoryID = 1,
+                            CatregoryID = 1,
                             Description = "Test",
                             Name = "Test",
                             NewPrice = 12m,
@@ -139,7 +142,7 @@ namespace Ecom.Infrastracture.Data.Migrations
                 {
                     b.HasOne("Ecom.Core.Entities.Product.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryID")
+                        .HasForeignKey("CatregoryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
