@@ -1,5 +1,6 @@
 ﻿using Ecom.Core.DTO;
 using Ecom.Core.Entities.Product;
+using Ecom.Core.Sharing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace Ecom.Core.Interfaces
         Task<bool> AddAsync(AddProductDTO productDTO);
         Task<bool> UpdateAsync(UpdateProductDTO updateProductDTO);
         Task DeleteAsync(Product product);
+        Task<IEnumerable<ProductDTO>> GetAllAsync(ProductParam productParam);
     }
 }

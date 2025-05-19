@@ -17,6 +17,7 @@ namespace Ecom.Core.Interfaces
         Task DeleteAsync(int Id);
         Task<T> GetByIdAsync(int Id);
         Task<T> GetByIdAsync(int Id,params Expression<Func<T, object>>[] includes);
+        Task<int> CountAsync();
 
     }
 }
