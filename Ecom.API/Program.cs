@@ -12,6 +12,16 @@ namespace Ecom.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddCors(op =>
+            {
+                op.AddPolicy("CORSPolicy", builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200")  // Your Angular app URL
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+            });
+            });
             // Add services to the container.
             builder.Services.AddMemoryCache();
             builder.Services.AddControllers();
@@ -32,7 +42,9 @@ namespace Ecom.API
                 app.MapOpenApi();
                 app.UseSwaggerUI(op => op.SwaggerEndpoint("/openapi/v1.json", "v1"));
             }
+            app.UseCors("CORSPolicy");
             app.UseMiddleware<ExceptionMiddleware>();
+            app.UseStaticFiles();
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
             app.UseHttpsRedirection();
 

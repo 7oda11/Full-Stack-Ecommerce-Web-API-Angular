@@ -9,7 +9,7 @@ namespace Ecom.Core.Sharing
     public class ProductParam
     {
         //string sort,int?CategotyId,int pageSize,int pageNumber
-        public string sort { get; set; }
+        public string? sort { get; set; }
         public int? CategotyId { get; set; }
         public int MaxPageSize { get; set; } = 6;
         private int _pageSize=3;

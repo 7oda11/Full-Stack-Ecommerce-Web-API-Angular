@@ -22,11 +22,11 @@ namespace Ecom.API.Controllers
             {
 
                 var products = await unit.ProductRepository.GetAllAsync(productParam);
-                if (products.Count()==0 )
+                if (products.TotalCount==0 )
                     return BadRequest(new ResponseAPI(400, "Products not found"));
                 //var result = mapper.Map<List<ProductDTO>>(products);
-                var totalCount = unit.ProductRepository.CountAsync();
-                return Ok(new Pagination<ProductDTO>(productParam.pageNumber,productParam.pageSize, await totalCount, (IReadOnlyList<ProductDTO>)products));
+                //var totalCount = unit.ProductRepository.CountAsync();
+                return Ok(new Pagination<ProductDTO>(productParam.pageNumber,productParam.pageSize, products.TotalCount, (IReadOnlyList<ProductDTO>)products.products));
             }
             catch (Exception ex)
             {

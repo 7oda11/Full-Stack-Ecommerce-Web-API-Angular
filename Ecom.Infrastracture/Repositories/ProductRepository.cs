@@ -93,7 +93,7 @@ namespace Ecom.Infrastracture.Repositories
             context.Products.Remove(product);
             await context.SaveChangesAsync();
         }
-        public async Task<IEnumerable<ProductDTO>> GetAllAsync(ProductParam productParam)
+        public async Task<ReturnProductDTO> GetAllAsync(ProductParam productParam)
         {
             var query = context.Products.Include(p=>p.Category).Include(p=>p.Photos).AsNoTracking();
             if (!string.IsNullOrEmpty(productParam.sort))
@@ -126,9 +126,11 @@ namespace Ecom.Infrastracture.Repositories
                 ));
 
             }
+            ReturnProductDTO returnProductDTO = new ReturnProductDTO();
+            returnProductDTO.TotalCount=query.Count();
             query=query.Skip((productParam.pageSize) *(productParam.pageNumber - 1)).Take(productParam.pageSize);
-            var result=mapper.Map<List<ProductDTO>>(query); 
-            return result;
+            returnProductDTO.products=mapper.Map<List<ProductDTO>>(query); 
+            return returnProductDTO;
         }
     }
 }
