@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Ecom.Core.Entities;
 using Ecom.Core.Interfaces;
 using Ecom.Core.Services;
 using Ecom.Infrastracture.Data;
+using Microsoft.AspNetCore.Identity;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,7 @@ namespace Ecom.Infrastracture.Repositories
         private readonly IImageManagementService imageManagementService;
         private readonly IMapper mapper;
         private readonly IConnectionMultiplexer connectionMultiplexer;
+        private readonly UserManager<AppUser> userManager;
 
         public ICategoryRepository CategoryRepository { get; }
 
@@ -25,17 +28,20 @@ namespace Ecom.Infrastracture.Repositories
         public IPhotoRepository PhotoRepository { get; }
 
         public ICustomerBasketRepository CustomerBasketRepository { get; }
+       public  IAuth Auth { get; }
 
-        public UnitOfWork(AppDbContext _context,IImageManagementService imageManagementService,IMapper mapper,IConnectionMultiplexer connectionMultiplexer)
+        public UnitOfWork(AppDbContext _context,IImageManagementService imageManagementService,IMapper mapper,IConnectionMultiplexer connectionMultiplexer,UserManager<AppUser> userManager)
         {
             context = _context;
             this.imageManagementService = imageManagementService;
             this.mapper = mapper;
             this.connectionMultiplexer = connectionMultiplexer;
+            this.userManager = userManager;
             CategoryRepository = new CategoryRepository(context);
             ProductRepository = new ProductRepository(context,mapper,imageManagementService);
             PhotoRepository = new PhotoRepository(context);
             CustomerBasketRepository = new CustomerBasketRepository(connectionMultiplexer);
+            Auth = new AuthRepository(userManager);
         }
     }
 }
