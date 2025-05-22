@@ -44,11 +44,11 @@ namespace Ecom.API
             }
             app.UseCors("CORSPolicy");
             app.UseMiddleware<ExceptionMiddleware>();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseStaticFiles();
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
             app.UseHttpsRedirection();
-
-            app.UseAuthorization();
 
 
             app.MapControllers();
