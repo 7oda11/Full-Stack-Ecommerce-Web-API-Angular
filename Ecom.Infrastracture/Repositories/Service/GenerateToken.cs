@@ -22,26 +22,31 @@ namespace Ecom.Infrastracture.Repositories.Service
         }
         public string GetAndCteateToken(AppUser user)
         {
-            List<Claim> claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.Name,user.UserName),
-                new Claim(ClaimTypes.Email,user.Email)
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Email, user.Email),
+        // Add issuer claim explicitly
+        new Claim(JwtRegisteredClaimNames.Iss, configuration["Token:Issure"])
+    };
 
-            };
-            var security = configuration["Token:Secret"];
-            var key=Encoding.ASCII.GetBytes(security);
-            SigningCredentials signingCredentials=new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256);
-            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor()
+            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Token:Secret"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(1),
-                Issuer = configuration["Token:Issure"],
-                SigningCredentials = signingCredentials,
+                Issuer = configuration["Token:Issure"], // Make sure this matches your config
+                SigningCredentials = credentials,
                 NotBefore = DateTime.Now,
             };
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            var token=handler.CreateToken(tokenDescriptor);
-            return  handler.WriteToken(token);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
+
+       
     }
 }

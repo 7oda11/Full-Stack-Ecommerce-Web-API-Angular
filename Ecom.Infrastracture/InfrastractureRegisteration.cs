@@ -4,7 +4,6 @@ using Ecom.Core.Services;
 using Ecom.Infrastracture.Data;
 using Ecom.Infrastracture.Repositories;
 using Ecom.Infrastracture.Repositories.Service;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -15,8 +14,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,12 +25,10 @@ namespace Ecom.Infrastracture
         public static IServiceCollection InfrastractureConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            //        builder.Services.AddSingleton<IFileProvider>(
-            //new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
-            services.AddSingleton<IImageManagementService,ImageManagementService>();
+            services.AddSingleton<IImageManagementService, ImageManagementService>();
             services.AddSingleton<IFileProvider>(
-            new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
-        );
+                new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
+            );
             services.AddSingleton<IConnectionMultiplexer>(i =>
             {
                 var config = ConfigurationOptions.Parse(configuration.GetConnectionString("redis"));
@@ -40,57 +36,60 @@ namespace Ecom.Infrastracture
             });
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IOrderService, OderService>();
             services.AddScoped<IGenerateToken, GenerateToken>();
+
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("EcomDB"));
             });
-            services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
+            services.AddIdentity<AppUser, IdentityRole>()
+                    .AddEntityFrameworkStores<AppDbContext>()
+                    .AddDefaultTokenProviders();
+
             services.Configure<IdentityOptions>(options =>
             {
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
             });
+
             services.AddAuthentication(op =>
             {
                 op.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                op.DefaultChallengeScheme= JwtBearerDefaults.AuthenticationScheme;
-                op.DefaultScheme=CookieAuthenticationDefaults.AuthenticationScheme;
-            }).AddCookie(o =>
-            {
-                o.Cookie.Name = "token";
-                o.Events.OnRedirectToLogin = context =>
-                {
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    return Task.CompletedTask;
-                };
-            }).AddJwtBearer(op =>
+                op.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(op =>
             {
                 op.RequireHttpsMetadata = false;
                 op.SaveToken = true;
-                op.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                op.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:Secret"])),
                     ValidateIssuer = true,
-                    ValidIssuer = configuration["Token:Issure"],
-                    ValidateAudience = false,
-                    ClockSkew=TimeSpan.Zero
-
+                    ValidIssuer = "https://localhost:44306/", // Must match token's `iss`
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes("My name is Mahmoud Ahmed from ITI") // Your secret key
+            ),
+                    ValidateAudience = false, // Set to `true` if needed
+                    ClockSkew = TimeSpan.Zero // Strict expiry validation
                 };
-                op.Events = new JwtBearerEvents()
+
+                // Support token from cookie or header
+                op.Events = new JwtBearerEvents
                 {
                     OnMessageReceived = context =>
                     {
-                        context.Token = context.Request.Cookies["Token"];
+                        context.Token = context.Request.Cookies["token"] ??
+                                        context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
                         return Task.CompletedTask;
                     }
-
-
                 };
             });
+
             return services;
         }
     }
+
 }

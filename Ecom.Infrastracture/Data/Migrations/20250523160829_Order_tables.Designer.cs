@@ -4,6 +4,7 @@ using Ecom.Infrastracture.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecom.Infrastracture.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250523160829_Order_tables")]
+    partial class Order_tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,48 +164,6 @@ namespace Ecom.Infrastracture.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DeliveryMethods");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DeliveryTime = "Only a week",
-                            Description = "The first delivery in the world",
-                            Name = "DHL",
-                            Price = 15m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            DeliveryTime = "2-3 business days",
-                            Description = "Fast and reliable",
-                            Name = "FedEx",
-                            Price = 20m
-                        },
-                        new
-                        {
-                            Id = 3,
-                            DeliveryTime = "Next day delivery",
-                            Description = "Lightning fast delivery",
-                            Name = "UPS",
-                            Price = 25m
-                        },
-                        new
-                        {
-                            Id = 4,
-                            DeliveryTime = "3-5 business days",
-                            Description = "Economical shipping",
-                            Name = "USPS",
-                            Price = 10m
-                        },
-                        new
-                        {
-                            Id = 5,
-                            DeliveryTime = "Same day delivery",
-                            Description = "Express service",
-                            Name = "Amazon Prime",
-                            Price = 30m
-                        });
                 });
 
             modelBuilder.Entity("Ecom.Core.Entities.Order.Order", b =>
