@@ -58,7 +58,7 @@ namespace Ecom.Core.Sharing
                     <h1>{message}</h1>
                     <hr />
                     <p>To proceed, please click the button below:</p>
-                    <a class=""button"" href=""http://localhost:4200/Account/{component}?email={email}&code={encodeToken}"">Continue</a>
+                    <a class=""button"" href=""http://localhost:4200/account/{component}?email={email}&code={encodeToken}"">Continue</a>
                 </div>
             </body>
         </html>";

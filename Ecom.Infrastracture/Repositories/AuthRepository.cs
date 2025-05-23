@@ -75,10 +75,14 @@ namespace Ecom.Infrastracture.Repositories
                 await SendEmail(findUser.Email, token, "active", "ActiveEmail", "Please Active your Email,click on button to active ");
                 return "Please confirm Your Email First, we have send activat to your E-mail";
             }
-            var result = await signInManager.CheckPasswordSignInAsync(findUser, loginDTO.Password, true);
+            var result = await signInManager.CheckPasswordSignInAsync(findUser, loginDTO.Password, false);
             if (result.Succeeded)
             {
                 return generateToken.GetAndCteateToken(findUser);
+            }else if (result.IsLockedOut)
+            {
+                return "Please your account is locked out , somthing went wrong";
+
             }
             return "Please Check your email and password, somthing went wrong";
         }

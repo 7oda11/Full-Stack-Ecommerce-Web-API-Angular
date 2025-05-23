@@ -34,6 +34,7 @@ namespace Ecom.API
                 options.ValueCountLimit = int.MaxValue; // Or a custom number higher than 1024
                 options.MultipartBodyLengthLimit = 268435456; // Example: 256 MB
             });
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
