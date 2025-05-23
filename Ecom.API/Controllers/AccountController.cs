@@ -54,5 +54,17 @@ namespace Ecom.API.Controllers
             var result=await unit.Auth.SendEmailForForgetPassword(email);
             return result ? Ok(new ResponseAPI(200)) : BadRequest(new ResponseAPI(400));
         }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult>Reset(ResetPasswordDTO resetPasswordDTO)
+        {
+            var result = await unit.Auth.ResetPassword(resetPasswordDTO);
+            if (result == "Done")
+            {
+                return Ok(new ResponseAPI(200));
+            }
+            return BadRequest(new ResponseAPI(400));
+
+        }
     }
 }

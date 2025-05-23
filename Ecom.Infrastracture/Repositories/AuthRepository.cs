@@ -94,7 +94,7 @@ namespace Ecom.Infrastracture.Repositories
                 return false;
             }
             var token=await userManager.GeneratePasswordResetTokenAsync(user);
-            await SendEmail(user.Email, token, "Reset-Password", "Reset Password", "Click on button to reset your password");
+            await SendEmail(user.Email, token, "reset-password", "Reset Password", "Click on button to reset your password");
             return true;
 
         }
@@ -108,7 +108,7 @@ namespace Ecom.Infrastracture.Repositories
             var result=await userManager.ResetPasswordAsync(user,resetPasswordDTO.Token, resetPasswordDTO.Password);
             if (result.Succeeded)
             {
-                return "Password Change success";
+                return "Done";
             }
             return result.Errors.ToList()[0].Description;
 
